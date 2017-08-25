@@ -3,18 +3,6 @@ app.baseUrl = "https://api.teleport.org/api";
 app.googleApiKey = "AIzaSyC2rp3eThm2aecP1jO5Ok4QpkYK_aJTuV4";
 app.weatherApiKey = "36dcbd995ae016fd693d2850b085e655";
 
-
-//Code from stackoverflow for the autocomplete location inputs
-
-// function initMap() {
-//   var input = document.getElementById('pac-input');
-//   var options = {
-//   	types: ["(cities)"]
-//   }
-
-//  var autocomplete = new google.maps.places.Autocomplete(input,options);
-
-// }
 app.events = function(){
 	//Auto Complete Bar courtesy of Teleport.
 	TeleportAutocomplete.init('.my-input').on('change', function(value) {
@@ -92,7 +80,7 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 		var details = res3[0];
 		console.log(details);
 		console.log(res4[0]);
-		var avgTemp = res4[0].main.temp;
+		var avgTemp = parseInt(res4[0].main.temp);
 		var weatherDescription = res4[0].weather[0].description;
 		var iconTemp = "http://openweathermap.org/img/w/" + res4[0].weather[0].icon + ".png";
 
