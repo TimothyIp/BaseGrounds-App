@@ -1,7 +1,16 @@
 var app = {};
 app.baseUrl = "https://api.teleport.org/api";
-app.googleApiKey = "AIzaSyC2rp3eThm2aecP1jO5Ok4QpkYK_aJTuV4";
+app.googleApiKey = "AIzaSyDhziRsGb0kP7XJOlu94x94WTcJ3ghwZOQ";
 app.weatherApiKey = "36dcbd995ae016fd693d2850b085e655";
+
+// app.googleMap = function() {
+// 	var map;
+// 	    map = new google.maps.Map(document.getElementById('google__map'), {
+// 	         center: {lat: 43.70011, lng: -79.4163},
+// 	         zoom: 10
+// 	       });
+	     
+// }
 
 app.events = function(){
 	//Auto Complete Bar courtesy of Teleport.
@@ -146,6 +155,16 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 
 		let ventureAccelDetails = noDataFiller( ventureInfo, ventureNumIndex2, "FUNDING-ACCELERATORS-DETAIL").int_value;
 
+		//Google Maps Location Parsing
+
+		let googleMapProp = {
+			center: {
+				lat: basicCityInfo.latitude,
+				lng: basicCityInfo.longitude
+			},
+			zoom: 10
+		}
+
 		//information from different ajax calls are sent to the view function
 		let results = {
 			basicCityInfo: basicCityInfo,
@@ -161,14 +180,12 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 			ventureAccelDetails: ventureAccelDetails,
 			avgTemp: avgTemp,
 			iconTemp: iconTemp,
-			weatherDescription: weatherDescription
+			weatherDescription: weatherDescription,
+			googleMapProp: googleMapProp
 		}
 		app.displayData(results)
 	})
 }
-
-
-
 
 app.displayData = function(results, err) {
 	console.log(results);
@@ -176,6 +193,16 @@ app.displayData = function(results, err) {
 	$(".no__info").empty();
 	$(".show__info").empty();
 	$(".details__info").empty();
+
+	//Google maps running and 
+	let map;
+		map = new google.maps.Map(document.getElementById('google__map'), results.googleMapProp);
+	let marker = new google.maps.Marker({
+		position: results.googleMapProp.center,
+		map: map,
+		title: "Test!"
+	});
+
 	//Grabs index with Id of STARTUPS
 	if (results) {
 
@@ -214,12 +241,16 @@ app.displayData = function(results, err) {
 
 
 		$(".city__description p:last").remove();
+
+
+
+
+
 	} else {
 		$(".no__info").append(err);
 	}
+
 }
-
-
 
 app.init = function () {
 	app.events();
