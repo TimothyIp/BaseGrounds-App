@@ -16,13 +16,14 @@ html, body {
 	text-align: center;
 }
 
+.information__container {
+  width: 100%;
+}
+
 .image__card img {
 	background-size: cover;
 }
 
-// .show__info {
-// 	display: flex;
-// }
 
 .city__container {
 	position: relative;
@@ -37,12 +38,18 @@ html, body {
 }
 
 .map__container {
-  width: 500px;
-  height: 500px;
+  width: 100%;
+  height: 40vh;
 }
 
 #google__map {
   height: 100%
+}
+
+.chart__container {
+  position: relative;
+  height: 100%;
+  width: 50vw;
 }
 
 // Teleport API autocomplete widget styling

@@ -12,10 +12,6 @@
 		<p>Pick a location</p>
 
 		<form action="">
-			<!-- <input id="pac-input" class="controls" type="text"
-			        placeholder="Enter a location"/>
-			 <pre id="placeInfo"></pre>
-			 <input type="submit" id="location_get"value="Go"> -->
 			 <div class="tp-autocomplete">
 			 	<input type="text" class="my-input tp-ac__input" placeholder="Pick your city" autocomplete="off">
 			 	<ul class="tp-ac__list"></ul>
@@ -23,14 +19,19 @@
 		</form>
 
 		 <div class="no__info"></div>
-		 <div class="image__card"></div>
-		 <div class="show__info"></div>
-		 <div class="details__info"></div>
-		 <div class="weather__container"></div>
-		 
-		<div class="map__container">
-			 <div id="google__map"></div>
-		</div>
+
+		<div class="information__container">
+			<div class="info__image"></div>
+			<div class="show__info"></div>
+			<div class="details__info"></div>
+			<div class="chart__container">
+				<canvas id="myChart" width="400" height=""></canvas>
+			</div>
+			<div class="weather__container"></div>
+			<div class="map__container">
+				 <div id="google__map"></div>
+			</div>
+		</div>		
 	
 	</div>
 	<!--  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2rp3eThm2aecP1jO5Ok4QpkYK_aJTuV4&libraries=places&callback=initMap"
@@ -39,6 +40,7 @@
 	<script src="js/teleport-autocomplete.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhziRsGb0kP7XJOlu94x94WTcJ3ghwZOQ"
 	    async defer></script>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 	<script src="js/scripts.js"></script>
 </body>
 </html>

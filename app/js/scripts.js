@@ -3,14 +3,7 @@ app.baseUrl = "https://api.teleport.org/api";
 app.googleApiKey = "AIzaSyDhziRsGb0kP7XJOlu94x94WTcJ3ghwZOQ";
 app.weatherApiKey = "36dcbd995ae016fd693d2850b085e655";
 
-// app.googleMap = function() {
-// 	var map;
-// 	    map = new google.maps.Map(document.getElementById('google__map'), {
-// 	         center: {lat: 43.70011, lng: -79.4163},
-// 	         zoom: 10
-// 	       });
-	     
-// }
+Chart.defaults.global.repsonsive = true;
 
 app.events = function(){
 	//Auto Complete Bar courtesy of Teleport.
@@ -155,6 +148,18 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 
 		let ventureAccelDetails = noDataFiller( ventureInfo, ventureNumIndex2, "FUNDING-ACCELERATORS-DETAIL").int_value;
 
+		let jobMarketIndex = details.categories.findIndex(function(el) {
+			return el.id === "JOB-MARKET";
+		});
+		let jobMarketInfo = details.categories[jobMarketIndex].data
+
+		let startupJobIndex = jobMarketInfo.findIndex(function(el) {
+			return el.id === "STARTUP-JOBS-AVAILABLE"
+		})
+
+		let startupJobsAvail = noDataFiller(jobMarketInfo, startupJobIndex, "STARTUP-JOBS-AVAILABLE").int_value;
+
+
 		//Google Maps Location Parsing
 
 		let googleMapProp = {
@@ -162,7 +167,88 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 				lat: basicCityInfo.latitude,
 				lng: basicCityInfo.longitude
 			},
-			zoom: 10
+			zoom: 10,
+			disableDefaultUI: true,
+			styles: [
+    {
+        "featureType": "administrative",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#444444"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#f2f2f2"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "all",
+        "stylers": [
+            {
+                "saturation": -100
+            },
+            {
+                "lightness": 45
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "simplified"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#46bcec"
+            },
+            {
+                "visibility": "on"
+            }
+        ]
+    }
+]
 		}
 
 		//information from different ajax calls are sent to the view function
@@ -181,7 +267,8 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 			avgTemp: avgTemp,
 			iconTemp: iconTemp,
 			weatherDescription: weatherDescription,
-			googleMapProp: googleMapProp
+			googleMapProp: googleMapProp,
+			startupJobsAvail: startupJobsAvail
 		}
 		app.displayData(results)
 	})
@@ -200,21 +287,24 @@ app.displayData = function(results, err) {
 	let marker = new google.maps.Marker({
 		position: results.googleMapProp.center,
 		map: map,
-		title: "Test!"
+		title: results.basicCityInfo.title
 	});
 
 	//Grabs index with Id of STARTUPS
 	if (results) {
 
-		let title = $("<h3>").addClass("city__title").text(results.basicCityInfo.title);
-		let description = $("<div>").addClass("city__description").html(results.summary);
 		let cityImage = $("<img>").addClass("city__image").attr('src', results.images)
 
-		let container = $("<div>").addClass("city__container").append(cityImage, title, description);
+		let title = $("<h3>").addClass("city__title").text(results.basicCityInfo.title);
+		let description = $("<div>").addClass("city__description").html(results.summary);
+
+		let container = $("<div>").addClass("city__container").append(title, description);
 
 		let population = $("<h3>").addClass("population__detail").text("Population:" +  results.basicCityInfo.population);
 
 		let startupNumbers = $("<p>").addClass("startup__numbers").append(`Startups in ${results.basicCityInfo.name}: ${results.startupNum}`);
+
+		let startupJobNum = $("<p>").addClass("startup__jobnum").append(`Start up jobs available: ${results.startupJobsAvail}`)
 
 		let startupChanges = $("<p>").addClass("startup__changes").append(`Average monthly increase in number of startups: ${results.startupMonthlyDif}`);
 
@@ -226,8 +316,9 @@ app.displayData = function(results, err) {
 
 		let acceleratorNum = $("<p>").addClass("accelerator__num").append(`Number of funding accelerators: ${results.ventureAccelDetails}`)
 
+		$(".info__image").append(cityImage);
 		$(".show__info").append(container);
-		$(".details__info").append(population,startupNumbers, startupChanges, investorNum, startupEvents, acceleratorNames, acceleratorNum);
+		$(".details__info").append(population,startupNumbers, startupChanges, startupJobNum,investorNum, startupEvents, acceleratorNames, acceleratorNum);
 
 		let weatherIcon = $("<img>").addClass("weather__icon").attr('src',results.iconTemp);
 		let weatherDescription = $("<p>").addClass("weather__description").append(`Current weather condition: ${results.weatherDescription}`)
@@ -239,12 +330,47 @@ app.displayData = function(results, err) {
 		$(".weather__container").empty();
 		$(".weather__container").append(weatherIcon, weatherDescription, weatherTemp);
 
-
+	var ctx = document.getElementById("myChart").getContext("2d");
+	var myChart = new Chart(ctx, {
+		responsive: true,
+		type: 'horizontalBar',
+		data: {
+			labels:[ "Number of Startups", "Average Monthly Startup Increase", "Startup Jobs", "Amount of investors", "Startup Events"],
+			datasets: [{
+				data:[results.startupNum, results.startupMonthlyDif, results.startupJobsAvail, results.startupMonthlyInvestors, results.startupEvents],
+				backgroundColor: [
+				              'rgba(255, 99, 132, 0.2)',
+				              'rgba(54, 162, 235, 0.2)',
+				              'rgba(255, 206, 86, 0.2)',
+				              'rgba(75, 192, 192, 0.2)',
+				              'rgba(153, 102, 255, 0.2)'
+				          ],
+				          borderColor: [
+				              'rgba(255,99,132,1)',
+				              'rgba(54, 162, 235, 1)',
+				              'rgba(255, 206, 86, 1)',
+				              'rgba(75, 192, 192, 1)',
+				              'rgba(153, 102, 255, 1)'
+				          ],
+				         borderWidth: 1
+			}]
+		},
+		options: {
+			legend:{
+				display: false
+			},
+			scales:{
+				yAxes:[{
+					ticks: {
+						beginAtZero:true
+					}
+				}]
+			}
+		}
+		
+	})
+	console.log(myChart.data)
 		$(".city__description p:last").remove();
-
-
-
-
 
 	} else {
 		$(".no__info").append(err);
