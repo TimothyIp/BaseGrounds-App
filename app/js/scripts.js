@@ -1,4 +1,5 @@
 var app = {};
+var myChart;
 app.baseUrl = "https://api.teleport.org/api";
 app.googleApiKey = "AIzaSyDhziRsGb0kP7XJOlu94x94WTcJ3ghwZOQ";
 app.weatherApiKey = "36dcbd995ae016fd693d2850b085e655";
@@ -314,8 +315,10 @@ app.displayData = function(results, err) {
 
 		let acceleratorNames = $("<p>").addClass("accelerator__names").append(`These are some of the funding accelerators in <strong>${results.basicCityInfo.name}:</strong> ${results.ventureAccelNames}`);
 
-		let acceleratorNum = $("<p>").addClass("accelerator__num").append(`Number of funding accelerators: ${results.ventureAccelDetails}`)
+		let acceleratorNum = $("<p>").addClass("accelerator__num").append(`Number of funding accelerators: ${results.ventureAccelDetails}`);
 
+
+		$(".info__image").empty();
 		$(".info__image").append(cityImage);
 		$(".show__info").append(container);
 		$(".details__info").append(population,startupNumbers, startupChanges, startupJobNum,investorNum, startupEvents, acceleratorNames, acceleratorNum);
@@ -326,12 +329,48 @@ app.displayData = function(results, err) {
 		let weatherTemp = $("<p>").addClass("weather__temp").append(`Current: ${results.avgTemp}&#8451;`);
 
 
-
 		$(".weather__container").empty();
 		$(".weather__container").append(weatherIcon, weatherDescription, weatherTemp);
+		//shows Value to the side solution grabbed from stackoverflow
+		
+		Chart.plugins.register({
+		      afterDatasetsDraw: function(chartInstance, easing) {
+		          // To only draw at the end of animation, check for easing === 1
+		          var ctx = chartInstance.chart.ctx;
 
-	var ctx = document.getElementById("myChart").getContext("2d");
-	var myChart = new Chart(ctx, {
+		          chartInstance.data.datasets.forEach(function (dataset, i) {
+		              var meta = chartInstance.getDatasetMeta(i);
+		              if (!meta.hidden) {
+		                  meta.data.forEach(function(element, index) {
+		                      // Draw the text in black, with the specified font
+		                      ctx.fillStyle = 'rgb(100, 100, 100)';
+
+		                      var fontSize = 16;
+		                      var fontStyle = 'normal';
+		                      var fontFamily = 'Helvetica Neue';
+		                      ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+
+		                      // Just naively convert to string for now
+		                      var dataString = dataset.data[index].toString();
+
+		                      // Make sure alignment settings are correct
+		                      ctx.textAlign = 'left';
+		                      ctx.textBaseline = 'middle';
+
+		                      var position = element.tooltipPosition();
+		                      ctx.fillText(dataString, position.x + 7, position.y - (fontSize / 2) + 9);
+		                  });
+		              }
+		          });
+		      }
+		  });
+
+		if(myChart) {
+			myChart.destroy();
+		}
+
+		var ctx = document.getElementById("myChart").getContext("2d");
+		myChart = new Chart(ctx, {
 		responsive: true,
 		type: 'horizontalBar',
 		data: {
@@ -369,7 +408,6 @@ app.displayData = function(results, err) {
 		}
 		
 	})
-	console.log(myChart.data)
 		$(".city__description p:last").remove();
 
 	} else {
