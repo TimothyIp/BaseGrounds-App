@@ -2,44 +2,69 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>StartupBaser</title>
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Quicksand" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Basing Grounds</title>
+	<link href="https://fonts.googleapis.com/css?family=Abel|Open+Sans:300,400" rel="stylesheet">	
+	<link rel="stylesheet" href="css/animate.css">
 	<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+	<div class="fullscreen-bg">
+	    <video loop muted autoplay poster="images/pexels-photo-96414.jpeg" class="fullscreen-bg__video">
+	        <source src="images/672651322.mp4" type="video/mp4">
+	    </video>
+
+	    <div class="intro__container">
+			<div class="intro__logo">
+				<div class="intro__title">
+					<div><span>Base</span>Grounds</div>
+					<div>Find your <span>roots.</span></div>
+					<div id="intro__search" class="tp-autocomplete">
+						<input type="text" class="my-input tp-ac__input" placeholder="Pick your city" autocomplete="off">
+						<ul class="tp-ac__list"></ul>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+
 	<div class="wrapper">	
 		<div class="header__container">
-				<h1>StartupBaser</h1>
-			
-			<p>Pick a location</p>
-			
-			<form action="">
+				<h1>BaseGrounds</h1>
+			<!-- <form action=""> -->
 				 <div class="tp-autocomplete">
-				 	<input type="text" class="my-input tp-ac__input" placeholder="Pick your city" autocomplete="off">
+				 	<input type="text" id="base__search" class="my-input tp-ac__input" placeholder="Pick your city" autocomplete="off">
 				 	<ul class="tp-ac__list"></ul>
 				 </div>
-			</form>
+			<!-- </form> -->
 			
 			 <div class="no__info"></div>
 		</div>
-		<div class="information__container">
-			<div class="info__image">
+		<div class="information__container hidden">
+			<div class="switch">
+			</div>
+			<div class="information__aside">
+				<div class="info__image">
+				</div>
+				<div class="map__container">
+					<div id="google__map"></div>
+				</div>
 			</div>
 			<div class="info__section">
 				<div class="info__title--container">
 					<div class="show__info"></div>
-					<div class="weather__container"></div>
+					<div class="weather__container clearfix"></div>
 				</div>
 				<div class="details__info"></div>
 				<div class="chart__container">
 					<canvas id="myChart" width="400" height=""></canvas>
 				</div>
-				<div class="map__container">
-					 <div id="google__map"></div>
-				</div>
 			</div>
 		</div>		
-	
+		<div class="load">
+			<div class="loader"></div>
+		</div>
 	</div>
 	<!--  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2rp3eThm2aecP1jO5Ok4QpkYK_aJTuV4&libraries=places&callback=initMap"
 	        async defer></script> -->

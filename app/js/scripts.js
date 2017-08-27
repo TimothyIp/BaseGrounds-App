@@ -4,27 +4,64 @@ app.baseUrl = "https://api.teleport.org/api";
 app.googleApiKey = "AIzaSyDhziRsGb0kP7XJOlu94x94WTcJ3ghwZOQ";
 app.weatherApiKey = "36dcbd995ae016fd693d2850b085e655";
 
-Chart.defaults.global.repsonsive = true;
-
 app.events = function(){
 	//Auto Complete Bar courtesy of Teleport.
 	TeleportAutocomplete.init('.my-input').on('change', function(value) {
 		// console.log(value);
-
 		var basicCityInfo = value
-		console.log(basicCityInfo);
-		if (value.uaSlug) {
+	$(".fullscreen-bg").remove();
+	$(".switch").fadeIn().delay(150).fadeOut(500);
+
+setTimeout( function() {
+	$(".information__container").removeClass("hidden").addClass("show");
+	if (value.uaSlug) {
 			var slugId = value.uaSlug;
 			app.urbanAreaInfo(slugId, basicCityInfo);
 		} else {
 			let err = "There is no startup information in this city.";
 			app.displayData(null,err);
 		}
+	}, 300)
+
+		// if (value.uaSlug) {
+		// 	var slugId = value.uaSlug;
+		// 	app.urbanAreaInfo(slugId, basicCityInfo);
+		// } else {
+		// 	let err = "There is no startup information in this city.";
+		// 	app.displayData(null,err);
+		// }
 	});
 
+	//Had to initialize again for the other page's search bar 
+	TeleportAutocomplete.init("#base__search").on('change', function(value) {
+			var basicCityInfo = value
+			console.log(basicCityInfo);
+			$(".switch").fadeIn().delay(150).fadeOut(500);
+
+		setTimeout( function() {
+			$(".information__container").removeClass("hidden").addClass("show");
+			if (value.uaSlug) {
+					var slugId = value.uaSlug;
+					app.urbanAreaInfo(slugId, basicCityInfo);
+				} else {
+					let err = "There is no startup information in this city.";
+					app.displayData(null,err);
+				}
+			}, 300)
+
+				// if (value.uaSlug) {
+				// 	var slugId = value.uaSlug;
+				// 	app.urbanAreaInfo(slugId, basicCityInfo);
+				// } else {
+				// 	let err = "There is no startup information in this city.";
+				// 	app.displayData(null,err);
+				// }
+	})
 
 	$("form").on('submit', function(e){
 		e.preventDefault();
+		// $("load").toggle();
+
 	})
 }
 app.urbanAreaInfo = function (slug, basicCityInfo) {
@@ -93,7 +130,7 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 			if( index === -1 ) {
 				let a = {id: id, 
 						int_value: 0,
-						string_value: "There is no data."
+						string_value: "There is no data for this city."
 						}
 				array.push(a);
 				return array[array.length - 1];
@@ -309,11 +346,20 @@ app.displayData = function(results, err) {
 	if (results) {
 
 		let cityImage = $("<img>").addClass("city__image").attr('src', results.imagesWide)
-		let cityImageMobile = $("<img>").addClass("city__image--mobile").attr('src', results.imagesMobile);
+		let cityImageMobile = $("<img>").addClass("animated fadeIn city__image--mobile").attr('src', results.imagesMobile);
+		
+		let title;
+		let imgInfo;
+		if (results.basicCityInfo.name !== results.basicCityInfo.admin1Division) {
+			title = $("<h3>").addClass("city__title").text(`${results.basicCityInfo.name}, ${results.basicCityInfo.admin1Division}`);
+			imgInfo = $("<div>").addClass("img__info").append(`<span>${results.basicCityInfo.name}, ${results.basicCityInfo.admin1Division}</span>`);
+		} else {
+			title = $("<h3>").addClass("city__title").text(`${results.basicCityInfo.name}, ${results.basicCityInfo.country}`);
+			imgInfo = $("<div>").addClass("img__info").append(`<span>${results.basicCityInfo.name}, ${results.basicCityInfo.country}</span>`)
+		}
 
-		let title = $("<h3>").addClass("city__title").text(`${results.basicCityInfo.name}, ${results.basicCityInfo.admin1Division}`);
 		let titleCountry = $("<p>").addClass("city__country").text(results.basicCityInfo.country);
-		let description = $("<div>").addClass("city__description").html(results.summary);
+		let description = $("<div>").addClass("animated fadeInDown city__description").html(results.summary);
 
 		let population = $("<p>").addClass("population__detail").text("Population: " +  results.basicCityInfo.population);
 
@@ -327,26 +373,22 @@ app.displayData = function(results, err) {
 
 		let startupEvents = $("<p>").addClass("startup__events").append(`Number of startup events in the last 12 months: ${results.startupEvents}`);
 
-		let acceleratorNames = $("<p>").addClass("accelerator__names").append(`These are some of the funding accelerators in <strong>${results.basicCityInfo.name}:</strong> ${results.ventureAccelNames}`);
+		let acceleratorNames = $("<p>").addClass("animated fadeInLeft accelerator__names").append(`These are some of the funding accelerators in <strong>${results.basicCityInfo.name}:</strong> ${results.ventureAccelNames}`);
 
-		let acceleratorNum = $("<p>").addClass("accelerator__num").append(`Number of funding accelerators: ${results.ventureAccelDetails}`);
+		let acceleratorNum = $("<p>").addClass("animated fadeInLeft accelerator__num").append(`Number of funding accelerators: ${results.ventureAccelDetails}`);
 
-		let container = $("<div>").addClass("city__container").append(title, titleCountry, population);
-
-		let imgInfo = $("<div>").addClass("img__info").append(`${results.basicCityInfo.name}, ${results.basicCityInfo.admin1Division}`);
-
+		let container = $("<div>").addClass("animated slideInUp city__container").append(title, titleCountry, population);
 
 		$(".info__image").empty();
-		// $(".info__image").append(cityImage);
 		$(".info__image").append(cityImageMobile, imgInfo);
 		$(".show__info").append(container);
-		$(".details__info").append(description,startupNumbers, startupChanges, startupJobNum,investorNum, startupEvents, acceleratorNames, acceleratorNum);
+		$(".details__info").append(description, acceleratorNum,acceleratorNames);
 
-		let weatherIcon = $("<img>").addClass("weather__icon").attr('src',results.iconTemp);
+		let weatherIcon = $("<img>").addClass("weather__icon animated slideInUp").attr('src',results.iconTemp);
 
-		let weatherDescription = $("<p>").addClass("weather__description").append(`Weather: ${results.weatherDescription}`)
+		let weatherDescription = $("<p>").addClass("weather__description animated slideInUp").append(`${results.weatherDescription}`)
 
-		let weatherTemp = $("<p>").addClass("weather__temp").append(`Current: ${results.avgTemp}&#8451;`);
+		let weatherTemp = $("<p>").addClass("weather__temp animated slideInUp").append(`${results.avgTemp}&#8451;`);
 
 
 		$(".weather__container").empty();
@@ -365,9 +407,9 @@ app.displayData = function(results, err) {
 		                      // Draw the text in black, with the specified font
 		                      ctx.fillStyle = 'rgb(100, 100, 100)';
 
-		                      var fontSize = 16;
+		                      var fontSize = 14;
 		                      var fontStyle = 'normal';
-		                      var fontFamily = 'Helvetica Neue';
+		                      var fontFamily = 'Open Sans';
 		                      ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
 
 		                      // Just naively convert to string for now
@@ -428,7 +470,8 @@ app.displayData = function(results, err) {
 		}
 		
 	})
-		$(".city__description p:last").remove();
+		
+		$(".city__description p").eq(1).remove();
 		$(".city__description i").remove();
 	} else {
 		$(".no__info").append(err);
@@ -442,5 +485,5 @@ app.init = function () {
 
 $(function() {
 	app.init();
-
+	$(".load").fadeOut();
 })
