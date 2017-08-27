@@ -2,34 +2,41 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Startup City Gauge</title>
+	<title>StartupBaser</title>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Quicksand" rel="stylesheet">
 	<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 	<div class="wrapper">	
-		<h1>Startup City Gauge</h1>
-		
-		<p>Pick a location</p>
-
-		<form action="">
-			 <div class="tp-autocomplete">
-			 	<input type="text" class="my-input tp-ac__input" placeholder="Pick your city" autocomplete="off">
-			 	<ul class="tp-ac__list"></ul>
-			 </div>
-		</form>
-
-		 <div class="no__info"></div>
-
+		<div class="header__container">
+				<h1>StartupBaser</h1>
+			
+			<p>Pick a location</p>
+			
+			<form action="">
+				 <div class="tp-autocomplete">
+				 	<input type="text" class="my-input tp-ac__input" placeholder="Pick your city" autocomplete="off">
+				 	<ul class="tp-ac__list"></ul>
+				 </div>
+			</form>
+			
+			 <div class="no__info"></div>
+		</div>
 		<div class="information__container">
-			<div class="info__image"></div>
-			<div class="show__info"></div>
-			<div class="details__info"></div>
-			<div class="chart__container">
-				<canvas id="myChart" width="400" height=""></canvas>
+			<div class="info__image">
 			</div>
-			<div class="weather__container"></div>
-			<div class="map__container">
-				 <div id="google__map"></div>
+			<div class="info__section">
+				<div class="info__title--container">
+					<div class="show__info"></div>
+					<div class="weather__container"></div>
+				</div>
+				<div class="details__info"></div>
+				<div class="chart__container">
+					<canvas id="myChart" width="400" height=""></canvas>
+				</div>
+				<div class="map__container">
+					 <div id="google__map"></div>
+				</div>
 			</div>
 		</div>		
 	

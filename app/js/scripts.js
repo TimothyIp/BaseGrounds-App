@@ -78,11 +78,12 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 	})
 
 	$.when(call1, call2, call3, call4).done(function(res1, res2, res3, res4){
-		var images = res1[0].photos[0].image.web;
+		var imagesWide = res1[0].photos[0].image.web;
+		var imagesMobile = res1[0].photos[0].image.mobile;
 		var summary = res2[0].summary;
 		var details = res3[0];
 		console.log(details);
-		console.log(res4[0]);
+		console.log(res1[0]);
 		var avgTemp = parseInt(res4[0].main.temp);
 		var weatherDescription = res4[0].weather[0].description;
 		var iconTemp = "http://openweathermap.org/img/w/" + res4[0].weather[0].icon + ".png";
@@ -135,7 +136,13 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 		let ventureIndex = details.categories.findIndex(function(el) {
 			return el.id === "VENTURE-CAPITAL";
 		});
-		let ventureInfo = details.categories[ventureIndex].data;
+
+		let ventureInfo;
+		if (ventureIndex !== -1) {
+				ventureInfo = details.categories[ventureIndex].data
+		} else {
+			ventureInfo = [];
+		}
 
 		let ventureNumIndex = ventureInfo.findIndex(function(el) {
 			return el.id === "FUNDING-ACCELERATOR-NAMES";
@@ -152,8 +159,14 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 		let jobMarketIndex = details.categories.findIndex(function(el) {
 			return el.id === "JOB-MARKET";
 		});
-		let jobMarketInfo = details.categories[jobMarketIndex].data
 
+		let jobMarketInfo;
+		if (jobMarketIndex !== -1) {
+				jobMarketInfo = details.categories[jobMarketIndex].data
+		} else {
+				jobMarketInfo = [];
+		}
+		
 		let startupJobIndex = jobMarketInfo.findIndex(function(el) {
 			return el.id === "STARTUP-JOBS-AVAILABLE"
 		})
@@ -256,7 +269,8 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 		let results = {
 			basicCityInfo: basicCityInfo,
 			summary: summary,
-			images: images,
+			imagesWide: imagesWide,
+			imagesMobile: imagesMobile,
 			details: details,
 			startupInfo: startupInfo,
 			startupNum: startupNum,
@@ -285,23 +299,23 @@ app.displayData = function(results, err) {
 	//Google maps running and 
 	let map;
 		map = new google.maps.Map(document.getElementById('google__map'), results.googleMapProp);
-	let marker = new google.maps.Marker({
-		position: results.googleMapProp.center,
-		map: map,
-		title: results.basicCityInfo.title
-	});
+	// let marker = new google.maps.Marker({
+	// 	position: results.googleMapProp.center,
+	// 	map: map,
+	// 	title: results.basicCityInfo.title
+	// });
 
 	//Grabs index with Id of STARTUPS
 	if (results) {
 
-		let cityImage = $("<img>").addClass("city__image").attr('src', results.images)
+		let cityImage = $("<img>").addClass("city__image").attr('src', results.imagesWide)
+		let cityImageMobile = $("<img>").addClass("city__image--mobile").attr('src', results.imagesMobile);
 
-		let title = $("<h3>").addClass("city__title").text(results.basicCityInfo.title);
+		let title = $("<h3>").addClass("city__title").text(`${results.basicCityInfo.name}, ${results.basicCityInfo.admin1Division}`);
+		let titleCountry = $("<p>").addClass("city__country").text(results.basicCityInfo.country);
 		let description = $("<div>").addClass("city__description").html(results.summary);
 
-		let container = $("<div>").addClass("city__container").append(title, description);
-
-		let population = $("<h3>").addClass("population__detail").text("Population:" +  results.basicCityInfo.population);
+		let population = $("<p>").addClass("population__detail").text("Population: " +  results.basicCityInfo.population);
 
 		let startupNumbers = $("<p>").addClass("startup__numbers").append(`Startups in ${results.basicCityInfo.name}: ${results.startupNum}`);
 
@@ -317,14 +331,20 @@ app.displayData = function(results, err) {
 
 		let acceleratorNum = $("<p>").addClass("accelerator__num").append(`Number of funding accelerators: ${results.ventureAccelDetails}`);
 
+		let container = $("<div>").addClass("city__container").append(title, titleCountry, population);
+
+		let imgInfo = $("<div>").addClass("img__info").append(`${results.basicCityInfo.name}, ${results.basicCityInfo.admin1Division}`);
+
 
 		$(".info__image").empty();
-		$(".info__image").append(cityImage);
+		// $(".info__image").append(cityImage);
+		$(".info__image").append(cityImageMobile, imgInfo);
 		$(".show__info").append(container);
-		$(".details__info").append(population,startupNumbers, startupChanges, startupJobNum,investorNum, startupEvents, acceleratorNames, acceleratorNum);
+		$(".details__info").append(description,startupNumbers, startupChanges, startupJobNum,investorNum, startupEvents, acceleratorNames, acceleratorNum);
 
 		let weatherIcon = $("<img>").addClass("weather__icon").attr('src',results.iconTemp);
-		let weatherDescription = $("<p>").addClass("weather__description").append(`Current weather condition: ${results.weatherDescription}`)
+
+		let weatherDescription = $("<p>").addClass("weather__description").append(`Weather: ${results.weatherDescription}`)
 
 		let weatherTemp = $("<p>").addClass("weather__temp").append(`Current: ${results.avgTemp}&#8451;`);
 
@@ -409,11 +429,11 @@ app.displayData = function(results, err) {
 		
 	})
 		$(".city__description p:last").remove();
-
+		$(".city__description i").remove();
 	} else {
 		$(".no__info").append(err);
 	}
-
+	$(".my-input").val("");
 }
 
 app.init = function () {
