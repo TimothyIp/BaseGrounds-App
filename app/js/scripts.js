@@ -7,36 +7,36 @@ app.weatherApiKey = "36dcbd995ae016fd693d2850b085e655";
 app.events = function(){
 	//Auto Complete Bar courtesy of Teleport.
 	TeleportAutocomplete.init('.my-input').on('change', function(value) {
-		// console.log(value);
-		var basicCityInfo = value
-	$(".fullscreen-bg").remove();
+		var basicCityInfo;
+		if(value === null) {
+			return 
+		} else {
+			basicCityInfo = value;
+		}
+
+	$(".load").fadeIn(10);
+	setTimeout( function() {
+		$(".fullscreen-bg").remove();
+		$(".load").fadeOut(600);
+	},550)
 	$(".switch").fadeIn().delay(150).fadeOut(500);
 
-setTimeout( function() {
-	$(".information__container").removeClass("hidden").addClass("show");
-	if (value.uaSlug) {
-			var slugId = value.uaSlug;
-			app.urbanAreaInfo(slugId, basicCityInfo);
-		} else {
-			let err = "There is no startup information in this city.";
-			app.displayData(null,err);
-		}
-	}, 300)
-
-		// if (value.uaSlug) {
-		// 	var slugId = value.uaSlug;
-		// 	app.urbanAreaInfo(slugId, basicCityInfo);
-		// } else {
-		// 	let err = "There is no startup information in this city.";
-		// 	app.displayData(null,err);
-		// }
+	setTimeout( function() {
+		$(".information__container").removeClass("hidden").addClass("show");
+		if (value.uaSlug) {
+				var slugId = value.uaSlug;
+				app.urbanAreaInfo(slugId, basicCityInfo);
+			} else {
+				let err = "There is no startup information in this city.";
+				app.displayData(null,err);
+			}
+		}, 350)
 	});
 
 	//Had to initialize again for the other page's search bar 
 	TeleportAutocomplete.init("#base__search").on('change', function(value) {
-			var basicCityInfo = value
-			console.log(basicCityInfo);
-			$(".switch").fadeIn().delay(150).fadeOut(500);
+		var basicCityInfo = value
+		$(".switch").fadeIn().delay(150).fadeOut(500);
 
 		setTimeout( function() {
 			$(".information__container").removeClass("hidden").addClass("show");
@@ -48,20 +48,6 @@ setTimeout( function() {
 					app.displayData(null,err);
 				}
 			}, 300)
-
-				// if (value.uaSlug) {
-				// 	var slugId = value.uaSlug;
-				// 	app.urbanAreaInfo(slugId, basicCityInfo);
-				// } else {
-				// 	let err = "There is no startup information in this city.";
-				// 	app.displayData(null,err);
-				// }
-	})
-
-	$("form").on('submit', function(e){
-		e.preventDefault();
-		// $("load").toggle();
-
 	})
 }
 app.urbanAreaInfo = function (slug, basicCityInfo) {
@@ -73,7 +59,6 @@ app.urbanAreaInfo = function (slug, basicCityInfo) {
 		dataType: "json",
 		url: urbanUrl
 	}).then(function(res) {
-		console.log(res);
 		let imageUrl = res._links["ua:images"].href;
 		let scoresUrl = res._links["ua:scores"].href;
 		let detailsUrl = res._links["ua:details"].href;
@@ -119,8 +104,6 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 		var imagesMobile = res1[0].photos[0].image.mobile;
 		var summary = res2[0].summary;
 		var details = res3[0];
-		console.log(details);
-		console.log(res1[0]);
 		var avgTemp = parseInt(res4[0].main.temp);
 		var weatherDescription = res4[0].weather[0].description;
 		var iconTemp = "http://openweathermap.org/img/w/" + res4[0].weather[0].icon + ".png";
@@ -327,8 +310,6 @@ app.parseData = function( basicCityInfo , imageUrl, scoresUrl, detailsUrl) {
 }
 
 app.displayData = function(results, err) {
-	console.log(results);
-	// console.log(err);
 	$(".no__info").empty();
 	$(".show__info").empty();
 	$(".details__info").empty();

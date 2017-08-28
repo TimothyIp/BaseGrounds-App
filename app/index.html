@@ -4,7 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>Basing Grounds</title>
+	<title>BaseGrounds</title>
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<link href="https://fonts.googleapis.com/css?family=Abel|Open+Sans:300,400" rel="stylesheet">	
 	<link rel="stylesheet" href="css/animate.css">
 	<link rel="stylesheet" href="css/styles.css">
@@ -21,20 +22,21 @@
 					<div><span>Base</span>Grounds</div>
 					<div>Find your <span>roots.</span></div>
 					<div id="intro__search" class="tp-autocomplete">
-						<input type="text" class="my-input tp-ac__input" placeholder="Pick your city" autocomplete="off">
+						<input type="text" class="my-input tp-ac__input" placeholder="Search For A City" autocomplete="off">
 						<ul class="tp-ac__list"></ul>
 					</div>
 				</div>
+				<div id="creator">Timothy Ip</div>
 			</div>
 	    </div>
 	</div>
 
 	<div class="wrapper">	
 		<div class="header__container">
-				<h1>BaseGrounds</h1>
+				<h1><span>Base</span>Grounds</h1>
 			<!-- <form action=""> -->
 				 <div class="tp-autocomplete">
-				 	<input type="text" id="base__search" class="my-input tp-ac__input" placeholder="Pick your city" autocomplete="off">
+				 	<input type="text" id="base__search" class="my-input tp-ac__input" placeholder="Search For A City" autocomplete="off">
 				 	<ul class="tp-ac__list"></ul>
 				 </div>
 			<!-- </form> -->
@@ -42,7 +44,9 @@
 			 <div class="no__info"></div>
 		</div>
 		<div class="information__container hidden">
+			<div class="load"></div>
 			<div class="switch">
+				<div class="loader"></div>
 			</div>
 			<div class="information__aside">
 				<div class="info__image">
@@ -66,8 +70,6 @@
 			<div class="loader"></div>
 		</div>
 	</div>
-	<!--  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2rp3eThm2aecP1jO5Ok4QpkYK_aJTuV4&libraries=places&callback=initMap"
-	        async defer></script> -->
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	<script src="js/teleport-autocomplete.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhziRsGb0kP7XJOlu94x94WTcJ3ghwZOQ"

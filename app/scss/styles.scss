@@ -20,9 +20,16 @@ html, body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   // font-family: 'Quicksand', sans-serif;
-  background-color: $background;
+  background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.2)), url("../images/pexels-photo-96414.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  overflow-x: hidden;
 }
 
+::selection {
+  background: $main-color;
+}
 
 .fullscreen-bg {
   position: fixed;
@@ -85,16 +92,30 @@ html, body {
 }
 
 .header__container {
-  padding: 2%;
+  padding-top: 3%;
+  padding-bottom: 1.7%;
+  font-size: 1.2rem;
+  font-weight: 300;
+  font-family: "Abel", sans-serif;
 }
 
 .header__container h1 {
-  // float: left;
+  color: #fff;
+  padding-bottom: 0.6%;
   margin: 0;
 }
-.header__container .tp-autocomplete {
-  width: 50vw;
 
+.header__container span {
+  color: $main-color;
+}
+.header__container .tp-autocomplete {
+  width: 100%;
+  margin: 0;
+}
+
+.header__container .tp-autocomplete .tp-autocomplete {
+  width: 50%;
+  margin: 0;
 }
 
 .header__container .tp-autocomplete .tp-ac__list {
@@ -103,12 +124,11 @@ html, body {
 
 .information__container {
   display: flex;
-  background-color:  #fff;
+  background-color:  #fdfdfd;
   padding-right: 3.5%;
   border-radius: 6px;
   transition: all 0.2s ease-in;
   position: relative;
-  min-height: 723px;
 }
 
 .switch {
@@ -129,9 +149,9 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: gray;
+  background-color: $main-color;
   content: "";
-  z-index: 100;
+  z-index: 1000;
   transition: all 0.2s ease-in;
 }
 
@@ -141,11 +161,12 @@ html, body {
   top: 40%;
   transform: translate(-50%, -50%);
   border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid $main-color; /* Blue */
+  border-top: 16px solid $background; /* Blue */
   border-radius: 50%;
   width: 120px;
   height: 120px;
   animation: spin 2s linear infinite;
+  z-index: 600;
 }
 
 @keyframes spin {
@@ -181,21 +202,25 @@ html, body {
   padding-top: 2.5%;
   padding-left: 3.5%;
   justify-content: space-between;
+  padding-bottom: 2.5%;
 }
 
 .city__country {
   margin: 0;
+  color: #757C8B;
 }
 
 .population__detail {
   margin: 0;
+  color: #757C8B;
 }
 
 .weather__container {
+  color: $background;
   display: flex;
   flex-direction: column;
-  align-content: flex-end;
-  align-items: flex-end;
+  align-content: center;
+  align-items: center;
 }
 
 .weather__icon {
@@ -204,26 +229,16 @@ html, body {
 }
 
 .weather__description {
-  text-align: right;
   margin: 0;
 }
 
 .weather__temp {
-  text-align: right;
   margin: 0;
 }
 
 .details__info {
   width: 100%;
 }
-
-// .city__description {
-//   margin: 0;
-// }
-
-// .accelerator__num {
-//   margin: 0;
-// }
 
 .accelerator__names {
   margin: 0;
@@ -278,6 +293,7 @@ html, body {
 .city__description p {
   margin: 0;
   margin-top: 2%;
+  color: #0F0C09
 }
 
 .city__image {
@@ -304,7 +320,6 @@ html, body {
 .chart__container {
   position: relative;
   width: 100%;
-  padding: 2.5%;
 }
 
 .show {
@@ -313,6 +328,17 @@ html, body {
 
 .hidden {
   opacity: 0;
+}
+
+#creator {
+  position: absolute;
+  color: #fff;
+  font-size: 1.3rem;
+  font-family: "Open Sans", sans-serif;
+  transform: rotate(90deg);
+  font-weight: 300;
+  top: 50%;
+  right: 0;
 }
 
 // Teleport API autocomplete widget styling
@@ -382,8 +408,6 @@ html, body {
   overflow: hidden;
   padding-left: 10px;
   padding: em(5px, 14px) em(10px, 14px);
-  // border-bottom-left-radius: 9px;
-  // border-bottom-right-radius: 9px;
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
@@ -401,7 +425,6 @@ html, body {
   &.no-results,
   &.no-results:hover {
     cursor: default;
-
     background-color: #fff;
   }
 
@@ -450,8 +473,46 @@ html, body {
   }
 }
 
+@media (max-height: 650px) {
+  #google__map {
+    height: 45vh;
+  }
+}
+
+
+@media (max-width: 1140px) {
+
+  #google__map {
+    height: 45vh;
+  }
+
+  .details__info {
+    flex-grow: 1;
+  }
+
+  .chart__container {
+    flex-grow: 4;
+  }
+}
+
 
 @media (max-width: 767px) {
+
+
+  .city__description p {
+    text-align: justify;
+  }
+
+  .header__container h1 {
+    text-align: center;
+  }
+
+  .header__container .tp-autocomplete .tp-autocomplete {
+    width: 100%;
+    margin-left: 25%;
+  }
+
+
   .fullscreen-bg {
     background: url('../images/pexels-photo-96414.jpeg') center center / cover no-repeat;
   }
@@ -459,4 +520,57 @@ html, body {
   .fullscreen-bg__video {
     display: none;
   }
+
+  .information__container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0;
+  }
+
+
+  .map__container {
+    display: none;
+  }
+
+  .info__section {
+    padding: 4%;
+  }
+
+}
+
+@media (max-width: 550px) {
+  #creator {
+    display: none;
+  }
+
+  .intro__title {
+    text-align: center;
+  }
+
+  .intro__title  div {
+    font-size: 2.2rem;
+    padding: 2.5%;
+  }
+
+  .intro__title div:nth-of-type(2){
+    font-size: 1.7rem;
+  }
+
+  .tp-autocomplete .tp-autocomplete{
+    font-size: 1rem;
+  }
+
+  #intro__search {
+    width: 100vw;
+  }
+
+  #intro__search .tp-autocomplete {
+    width: 100%;
+  }
+
+  #intro__search .tp-autocomplete ul {
+   left: 50%;
+   transform: translateX(-50%);
+  }
+
 }
